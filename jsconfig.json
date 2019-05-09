@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": ["./app/*", "./app"],
+      "@config": ["app.config.js"]
+    }
+  }
+}

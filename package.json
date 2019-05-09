@@ -1,0 +1,43 @@
+{
+  "name": "react-chat-ts-server",
+  "version": "0.1.0",
+  "description": "A server for react-chat-ts app",
+  "main": "app/index.js",
+  "scripts": {
+    "start": "node app",
+    "test": "jest --config ./jest.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/risenforces/react-chat-ts-server.git"
+  },
+  "keywords": [
+    "react",
+    "chat",
+    "socket",
+    "server"
+  ],
+  "author": "Evgeny Zakharov <i.am@risen.dev>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/risenforces/react-chat-ts-server/issues"
+  },
+  "homepage": "https://github.com/risenforces/react-chat-ts-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chalk": "^2.4.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "module-alias": "^2.2.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "jest": "^24.8.0"
+  },
+  "_moduleAliases": {
+    "@app": "app",
+    "@config": "app.config.js"
+  }
+}
