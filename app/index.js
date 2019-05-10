@@ -1,12 +1,21 @@
 require('module-alias/register')
 require('dotenv').config()
 
-const Log = require('./helpers/Log')
+const { dbName } = require('@config')
 
-const app = require('./app')
+const app = require('@app/app')
+const connect = require('@app/db/connect')
+
+const Log = require('@app/helpers/Log')
 
 const port = parseInt(process.env.PORT, 10) || 3030
 
-app.listen(port, () => {
-  Log.success(`Listening on port ${port}`)
-})
+connect({ dbName })
+  .then(() => {
+    app.listen(port, () => {
+      Log.success(`Listening on port ${port}`)
+    })
+  })
+  .catch(() => {
+    Log.failure('Failed to start server')
+  })

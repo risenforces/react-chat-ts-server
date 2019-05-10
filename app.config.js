@@ -8,12 +8,15 @@ const env = {
   isTest
 }
 
+const dbName = 'react-chat-ts'
+
 const testsFolders = []
 
 const logsFolder = './logs'
 
 module.exports = {
   env,
+  dbName,
   testsFolders,
   logsFolder
 }
