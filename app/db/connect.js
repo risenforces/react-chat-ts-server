@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 const Log = require('@app/helpers/Log')
 
-// findAndModify is deprecated
+// fix some options
 mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 module.exports = ({ dbName }) => {
   return new Promise((resolve, reject) => {
