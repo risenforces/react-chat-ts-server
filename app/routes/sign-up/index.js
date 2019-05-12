@@ -10,7 +10,7 @@ const { User } = require('@app/db/models')
 
 const reservedUsernames = require('@app/constants/reserved-usernames')
 
-router.post('/', validate(routeSchemas.post), async (req, res) => {
+router.post('/', validate('body', routeSchemas.post), async (req, res) => {
   const { username, password } = req.body
 
   try {

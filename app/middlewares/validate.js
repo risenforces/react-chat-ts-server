@@ -1,9 +1,9 @@
-const validate = schema => {
+const validate = (key, schema) => {
   return (req, res, next) => {
-    const { body } = req
+    const value = req[key]
 
     try {
-      schema.validateSync(body, {
+      schema.validateSync(value, {
         strict: true
       })
     } catch (err) {
