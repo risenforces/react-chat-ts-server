@@ -8,7 +8,7 @@ const routeSchemas = schemas['/']
 
 const { User } = require('@app/db/models')
 
-const { reservedUsernames } = require('@config')
+const reservedUsernames = require('@app/constants/reserved-usernames')
 
 router.post('/', validate(routeSchemas.post), async (req, res) => {
   const { username, password } = req.body
