@@ -15,6 +15,5 @@ const logsFolder = './logs'
 module.exports = {
   env,
   dbName,
-  testsFolders,
   logsFolder
 }
