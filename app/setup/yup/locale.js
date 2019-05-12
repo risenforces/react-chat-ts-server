@@ -55,6 +55,10 @@ const unformattedLocale = {
     uppercase: {
       code: '${path}/UPPERCASE',
       message: '${path} must be a upper case string'
+    },
+    mongodbObjectId: {
+      code: '${path}/MONGODB_OBJECT_ID',
+      message: '${path} must be a mongodb ObjectId'
     }
   },
   number: {
