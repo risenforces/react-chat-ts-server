@@ -9,7 +9,6 @@ const env = {
 }
 
 const dbName = 'react-chat-ts'
-
 const logsFolder = './logs'
 
 module.exports = {
