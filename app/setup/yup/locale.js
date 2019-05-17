@@ -110,6 +110,10 @@ const unformattedLocale = {
       code: '${path}/NO_UNKNOWN',
       message:
         '${path} field cannot have keys not specified in the object shape'
+    },
+    atLeastOneOf: {
+      code: '${path}/AT_LEAST_ONE_OF',
+      message: 'At least one of these keys must be specified: ${list}'
     }
   },
   array: {

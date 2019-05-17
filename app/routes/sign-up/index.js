@@ -4,13 +4,12 @@ const jwt = require('jsonwebtoken')
 
 const validate = require('@app/middlewares/validate')
 const schemas = require('./schemas')
-const routeSchemas = schemas['/']
 
 const { User } = require('@app/db/models')
 
 const reservedUsernames = require('@app/constants/reserved-usernames')
 
-router.post('/', validate('body', routeSchemas.post), async (req, res) => {
+router.post('/', validate(schemas.signUp), async (req, res) => {
   const { username, password } = req.body
 
   try {
@@ -43,19 +42,13 @@ router.post('/', validate('body', routeSchemas.post), async (req, res) => {
     })
     const user = await createQuery
 
-    const token = jwt.sign(
-      {
-        ...user.toJSON(),
-        password: undefined
-      },
-      process.env.SECRET
-    )
+    const token = jwt.sign(user.getJWTPayload(), process.env.SECRET)
 
     res.status(201)
     return res.send({
       status: 'success',
       payload: {
-        token
+        jwt: token
       }
     })
   } catch (err) {

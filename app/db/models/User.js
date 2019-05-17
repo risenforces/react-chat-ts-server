@@ -17,7 +17,7 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['user', 'moder', 'admin'],
       default: 'user'
     },
     status: {
@@ -51,12 +51,31 @@ UserSchema.methods.comparePassword = function(password) {
   return bcrypt.compareSync(password, this.password)
 }
 
+UserSchema.methods.getJWTPayload = function() {
+  const plain = this.toObject()
+  return {
+    _id: plain._id
+  }
+}
+
 UserSchema.methods.getFullData = function() {
-  return omit(this, 'password')
+  const plain = this.toObject()
+  return omit(plain, 'password')
 }
 
 UserSchema.methods.getPublicData = function() {
-  return omit(this, ['password', 'status.mutedUntil', 'updatedAt'])
+  const plain = this.toObject()
+  return omit(plain, ['password', 'status.mutedUntil', 'updatedAt'])
+}
+
+UserSchema.methods.hasModerAccess = function() {
+  const plain = this.toObject()
+  return ['moder', 'admin'].includes(plain.role)
+}
+
+UserSchema.methods.hasAdminAccess = function() {
+  const plain = this.toObject()
+  return ['admin'].includes(plain.role)
 }
 
 const User = model('user', UserSchema)
