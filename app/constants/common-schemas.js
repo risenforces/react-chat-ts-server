@@ -1,18 +1,18 @@
 const Yup = require('yup')
 
-exports.UsernameSchema = Yup.string()
+const UsernameSchema = Yup.string()
   .min(2)
   .max(16)
   .matches(/^[a-zA-Z0-9_.-]*$/)
 
-exports.PasswordSchema = Yup.string()
+const PasswordSchema = Yup.string()
   .min(8)
   .max(64)
   .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])\S*$/)
 
-exports.RoleSchema = Yup.string().oneOf(['user', 'moder', 'admin'])
+const RoleSchema = Yup.string().oneOf(['user', 'moder', 'admin'])
 
-exports.UserDataSchema = Yup.object()
+const UserDataSchema = Yup.object()
   .shape({
     username: UsernameSchema,
     password: PasswordSchema,
@@ -20,9 +20,17 @@ exports.UserDataSchema = Yup.object()
   })
   .noUnknown()
 
-exports.EditableUserDataSchema = Yup.object()
+const EditableUserDataSchema = Yup.object()
   .shape({
     username: UsernameSchema,
     password: PasswordSchema
   })
   .noUnknown()
+
+module.exports = {
+  UsernameSchema,
+  PasswordSchema,
+  RoleSchema,
+  UserDataSchema,
+  EditableUserDataSchema
+}

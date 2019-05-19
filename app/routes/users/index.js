@@ -9,22 +9,22 @@ const { User } = require('@app/db/models')
 
 const reservedUsernames = require('@app/constants/reserved-usernames')
 
+router.get('/me', async (req, res) => {
+  const { user: currentUser } = req
+
+  return res.send({
+    status: 'success',
+    payload: {
+      user: currentUser.getFullData()
+    }
+  })
+})
+
 router.get('/:username', validate(schemas.getUser), async (req, res) => {
   const { user: currentUser } = req
   const { username } = req.params
 
   try {
-    // the user asks for his data
-    // return full data
-    if (username === 'me') {
-      return res.send({
-        status: 'success',
-        payload: {
-          user: currentUser.getFullData()
-        }
-      })
-    }
-
     const userQuery = User.findOne({ username })
     const user = await userQuery.exec()
 
@@ -112,6 +112,54 @@ router.post(
   }
 )
 
+router.post('/me/edit', validate(schemas.editMe), async (req, res) => {
+  const { user: currentUser } = req
+  const { username: currentUsername } = currentUser.getFullData()
+  const { data } = req.body
+
+  try {
+    if (data.username && data.username !== currentUsername) {
+      if (reservedUsernames.includes(data.username)) {
+        return res.send({
+          status: 'failure',
+          error: {
+            code: '@users/USERNAME_IS_RESERVED',
+            message: `Username "${
+              data.username
+            }" is reserved and cannot be used`
+          }
+        })
+      }
+    }
+
+    const updateQuery = User.findOneAndUpdate(
+      { username: currentUsername },
+      data,
+      { new: true }
+    )
+    const updatedUser = await updateQuery.exec()
+
+    if (!updatedUser) {
+      return res.send({
+        status: 'failure',
+        error: {
+          code: '@users/USER_NOT_FOUND',
+          message: 'User not found'
+        }
+      })
+    }
+
+    return res.send({
+      status: 'success',
+      payload: {
+        user: updatedUser.getFullData()
+      }
+    })
+  } catch (err) {
+    res.sendStatus(500)
+  }
+})
+
 router.post(
   '/:username/edit',
   roles.admin,
@@ -127,14 +175,18 @@ router.post(
             status: 'failure',
             error: {
               code: '@users/USERNAME_IS_RESERVED',
-              message: `Username "${username}" is reserved and cannot be used`
+              message: `Username "${
+                data.username
+              }" is reserved and cannot be used`
             }
           })
         }
       }
 
-      const updateQuery = User.findOneAndUpdate({ username }, data)
-      const updatedUser = updateQuery.exec()
+      const updateQuery = User.findOneAndUpdate({ username }, data, {
+        new: true
+      })
+      const updatedUser = await updateQuery.exec()
 
       if (!updatedUser) {
         return res.send({
@@ -149,7 +201,7 @@ router.post(
       return res.send({
         status: 'success',
         payload: {
-          user: updatedUser
+          user: updatedUser.getFullData()
         }
       })
     } catch (err) {
@@ -157,46 +209,5 @@ router.post(
     }
   }
 )
-
-router.post('/me/edit', validate(schemas.editMe), async (req, res) => {
-  const { username } = req.user.toObject()
-  const { data } = req.body
-
-  try {
-    if (data.username && data.username !== username) {
-      if (reservedUsernames.includes(data.username)) {
-        return res.send({
-          status: 'failure',
-          error: {
-            code: '@users/USERNAME_IS_RESERVED',
-            message: `Username "${username}" is reserved and cannot be used`
-          }
-        })
-      }
-    }
-
-    const updateQuery = User.findOneAndUpdate({ username }, data)
-    const updatedUser = updateQuery.exec()
-
-    if (!updatedUser) {
-      return res.send({
-        status: 'failure',
-        error: {
-          code: '@users/USER_NOT_FOUND',
-          message: 'User not found'
-        }
-      })
-    }
-
-    return res.send({
-      status: 'success',
-      payload: {
-        user: updatedUser
-      }
-    })
-  } catch (err) {
-    res.sendStatus(500)
-  }
-})
 
 module.exports = router

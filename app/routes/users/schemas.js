@@ -1,6 +1,9 @@
 const Yup = require('yup')
 
-const { UserDataSchema } = require('@app/constants/common-schemas')
+const {
+  UserDataSchema,
+  EditableUserDataSchema
+} = require('@app/constants/common-schemas')
 
 const ParamsSchema = Yup.object().shape({
   username: Yup.string().required()
@@ -25,7 +28,7 @@ module.exports = {
   },
   editMe: {
     body: Yup.object().shape({
-      data: UserDataSchema.required()
+      data: EditableUserDataSchema.required()
     })
   }
 }
