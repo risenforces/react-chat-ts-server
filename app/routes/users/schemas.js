@@ -10,6 +10,7 @@ const ParamsSchema = Yup.object().shape({
 })
 
 module.exports = {
+  getMe: {},
   getUser: {
     params: ParamsSchema
   },
@@ -19,6 +20,11 @@ module.exports = {
       ignoreReserved: Yup.boolean()
     })
   },
+  editMe: {
+    body: Yup.object().shape({
+      data: EditableUserDataSchema.required()
+    })
+  },
   editUser: {
     params: ParamsSchema,
     body: Yup.object().shape({
@@ -26,9 +32,26 @@ module.exports = {
       ignoreReserved: Yup.boolean()
     })
   },
-  editMe: {
+  deleteMe: {},
+  deleteUser: {
+    params: ParamsSchema
+  },
+  muteUser: {
+    params: ParamsSchema,
     body: Yup.object().shape({
-      data: EditableUserDataSchema.required()
+      seconds: Yup.number()
+        .integer()
+        .min(1)
+        .required()
     })
+  },
+  unmuteUser: {
+    params: ParamsSchema
+  },
+  banUser: {
+    params: ParamsSchema
+  },
+  unbanUser: {
+    params: ParamsSchema
   }
 }

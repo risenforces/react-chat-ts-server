@@ -1,213 +1,22 @@
 const { Router } = require('express')
 const router = Router()
 
-const validate = require('@app/middlewares/validate')
-const schemas = require('./schemas')
-const roles = require('@app/middlewares/roles')
+const { setupGet } = require('./actions/get')
+setupGet(router)
 
-const { User } = require('@app/db/models')
+const { setupCreate } = require('./actions/create')
+setupCreate(router)
 
-const reservedUsernames = require('@app/constants/reserved-usernames')
+const { setupEdit } = require('./actions/edit')
+setupEdit(router)
 
-router.get('/me', async (req, res) => {
-  const { user: currentUser } = req
+const { setupDelete } = require('./actions/delete')
+setupDelete(router)
 
-  return res.send({
-    status: 'success',
-    payload: {
-      user: currentUser.getFullData()
-    }
-  })
-})
+const { setupMute } = require('./actions/mute')
+setupMute(router)
 
-router.get('/:username', validate(schemas.getUser), async (req, res) => {
-  const { user: currentUser } = req
-  const { username } = req.params
-
-  try {
-    const userQuery = User.findOne({ username })
-    const user = await userQuery.exec()
-
-    // the requested user is not exist in DB
-    // return failure
-    if (!user) {
-      return res.send({
-        status: 'failure',
-        error: {
-          code: '@users/USER_NOT_FOUND',
-          message: 'User not found'
-        }
-      })
-    }
-
-    // the user with moderator access asks for another user's data
-    // return full data
-    if (currentUser.hasModerAccess()) {
-      return res.send({
-        status: 'success',
-        payload: {
-          user: user.getFullData()
-        }
-      })
-    }
-
-    // the user without any special access asks for another user's data
-    // return only public data in this case
-    return res.send({
-      status: 'success',
-      payload: {
-        user: user.getPublicData()
-      }
-    })
-  } catch (err) {
-    res.sendStatus(500)
-  }
-})
-
-router.post(
-  '/',
-  roles.admin,
-  validate(schemas.createUser),
-  async (req, res) => {
-    const { data, ignoreReserved } = req.body
-    const { username } = data
-
-    try {
-      if (!ignoreReserved && reservedUsernames.includes(username)) {
-        return res.send({
-          status: 'failure',
-          error: {
-            code: '@users/USERNAME_IS_RESERVED',
-            message: `Username "${username}" is reserved and cannot be used`
-          }
-        })
-      }
-
-      const existingUserQuery = User.findOne({ username })
-      const existingUser = await existingUserQuery.exec()
-
-      if (existingUser) {
-        return res.send({
-          status: 'failure',
-          error: {
-            code: '@users/USER_ALREADY_EXISTS',
-            message: 'User already exists'
-          }
-        })
-      }
-
-      const createQuery = User.create(data)
-      const user = await createQuery
-
-      res.status(201)
-      return res.send({
-        status: 'success',
-        payload: {
-          user: user.getFullData()
-        }
-      })
-    } catch (err) {
-      res.sendStatus(500)
-    }
-  }
-)
-
-router.post('/me/edit', validate(schemas.editMe), async (req, res) => {
-  const { user: currentUser } = req
-  const { username: currentUsername } = currentUser.getFullData()
-  const { data } = req.body
-
-  try {
-    if (data.username && data.username !== currentUsername) {
-      if (reservedUsernames.includes(data.username)) {
-        return res.send({
-          status: 'failure',
-          error: {
-            code: '@users/USERNAME_IS_RESERVED',
-            message: `Username "${
-              data.username
-            }" is reserved and cannot be used`
-          }
-        })
-      }
-    }
-
-    const updateQuery = User.findOneAndUpdate(
-      { username: currentUsername },
-      data,
-      { new: true }
-    )
-    const updatedUser = await updateQuery.exec()
-
-    if (!updatedUser) {
-      return res.send({
-        status: 'failure',
-        error: {
-          code: '@users/USER_NOT_FOUND',
-          message: 'User not found'
-        }
-      })
-    }
-
-    return res.send({
-      status: 'success',
-      payload: {
-        user: updatedUser.getFullData()
-      }
-    })
-  } catch (err) {
-    res.sendStatus(500)
-  }
-})
-
-router.post(
-  '/:username/edit',
-  roles.admin,
-  validate(schemas.editUser),
-  async (req, res) => {
-    const { username } = req.params
-    const { data, ignoreReserved } = req.body
-
-    try {
-      if (data.username && data.username !== username) {
-        if (!ignoreReserved && reservedUsernames.includes(data.username)) {
-          return res.send({
-            status: 'failure',
-            error: {
-              code: '@users/USERNAME_IS_RESERVED',
-              message: `Username "${
-                data.username
-              }" is reserved and cannot be used`
-            }
-          })
-        }
-      }
-
-      const updateQuery = User.findOneAndUpdate({ username }, data, {
-        new: true
-      })
-      const updatedUser = await updateQuery.exec()
-
-      if (!updatedUser) {
-        return res.send({
-          status: 'failure',
-          error: {
-            code: '@users/USER_NOT_FOUND',
-            message: 'User not found'
-          }
-        })
-      }
-
-      return res.send({
-        status: 'success',
-        payload: {
-          user: updatedUser.getFullData()
-        }
-      })
-    } catch (err) {
-      res.sendStatus(500)
-    }
-  }
-)
+const { setupBan } = require('./actions/ban')
+setupBan(router)
 
 module.exports = router
