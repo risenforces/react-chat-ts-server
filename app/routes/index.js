@@ -8,4 +8,6 @@ exports.useRoutes = app => {
   app.use('/sign-in', signIn)
   app.use('/sign-up', signUp)
   app.use('/users', auth, users)
+
+  return app
 }

@@ -3,16 +3,21 @@ require('dotenv').config()
 
 const { dbName } = require('@config')
 
-const app = require('@app/app')
-const connect = require('@app/db/connect')
+const server = require('./server')
+const connectMongoDB = require('./db/connect')
 
-const Log = require('@app/helpers/Log')
+const Log = require('./helpers/Log')
 
 const port = parseInt(process.env.PORT, 10) || 3030
 
-connect({ dbName })
+connectMongoDB({ dbName })
   .then(() => {
-    app.listen(port, () => {
+    const connectRedis = require('./redis/connect')
+
+    return connectRedis()
+  })
+  .then(() => {
+    server.listen(port, () => {
       Log.success(`Listening on port ${port}`)
     })
   })

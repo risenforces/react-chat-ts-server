@@ -12,4 +12,7 @@ app.use(bodyParser.json())
 const { useRoutes } = require('./routes')
 useRoutes(app)
 
-module.exports = app
+const { useWS } = require('./socket')
+const server = useWS(app, '/ws')
+
+module.exports = server
