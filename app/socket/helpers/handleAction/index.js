@@ -1,27 +1,37 @@
 const { createHelpers } = require('./helpers')
 const { storage: actionsStorage } = require('../../actions')
 
-const handleAction = ({ io, socket, userId, parsedMessage }) => {
+const handleAction = async ({ io, socket, userId, parsedMessage }) => {
   const { action, requestId } = parsedMessage
 
   const { reply, broadcast } = createHelpers({ socket, requestId })
 
-  const actionFn = actionsStorage.get(action)
+  const actionChain = actionsStorage.get(action)
 
-  if (!actionFn) {
+  if (!actionChain) {
     return reply.failure({
       code: '#common/UNKNOWN_ACTION',
       message: `Action ${action} is not exist`
     })
   }
 
-  actionFn({
-    io,
-    socket,
-    userId,
-    parsedMessage,
-    actions: { reply, broadcast }
-  })
+  const nextSymbol = Symbol('next')
+  const next = () => nextSymbol
+
+  for (let handler of actionChain) {
+    const result = await handler({
+      io,
+      socket,
+      userId,
+      parsedMessage,
+      actions: { reply, broadcast },
+      next
+    })
+
+    // the handler did not return next()
+    // the chain has completed / middleware stopped the chain
+    if (result !== nextSymbol) break
+  }
 }
 
 module.exports = handleAction
