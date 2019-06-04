@@ -1,7 +1,10 @@
 const { Schema, model } = require('mongoose')
-const { createDataMethod, is } = require('../helpers')
 const bcrypt = require('bcrypt')
 const omit = require('deep-omit')
+
+const { roles, defaultRole, matches: rolesMatches } = require('@app/constants/general-roles')
+
+const { createDataMethod, is } = require('../helpers')
 
 const UserSchema = new Schema(
   {
@@ -18,8 +21,8 @@ const UserSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'moder', 'admin', 'creator'],
-      default: 'user'
+      enum: roles,
+      default: defaultRole
     },
     status: {
       banned: {
@@ -60,9 +63,17 @@ UserSchema.methods.getPublicData = createDataMethod(data => {
   return omit(data, ['password', 'updatedAt'])
 })
 
-UserSchema.methods.hasModerAccess = is('role').oneOf(['moder', 'admin', 'creator'])
-UserSchema.methods.hasAdminAccess = is('role').oneOf(['admin', 'creator'])
-UserSchema.methods.hasCreatorAccess = is('role').equalTo('creator')
+UserSchema.methods.hasUserAccess = is('role').oneOf(rolesMatches.user)
+UserSchema.methods.hasModerAccess = is('role').oneOf(rolesMatches.moder)
+UserSchema.methods.hasAdminAccess = is('role').oneOf(rolesMatches.admin)
+UserSchema.methods.hasCreatorAccess = is('role').oneOf(rolesMatches.creator)
+
+UserSchema.methods.matchesRole = function(role) {
+  const data = this.toObject()
+  return rolesMatches[role].includes(data.role)
+}
+
+UserSchema.methods.isBanned = is('status.banned').equalTo(true)
 
 const User = model('user', UserSchema)
 
