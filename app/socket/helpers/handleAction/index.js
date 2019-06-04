@@ -1,7 +1,7 @@
 const { createHelpers } = require('./helpers')
 const { storage: actionsStorage } = require('../../actions')
 
-const handleAction = async ({ io, socket, userId, parsedMessage }) => {
+const handleAction = async ({ io, socket, user, parsedMessage }) => {
   const { action, requestId } = parsedMessage
 
   const { reply, broadcast } = createHelpers({ socket, requestId })
@@ -22,7 +22,7 @@ const handleAction = async ({ io, socket, userId, parsedMessage }) => {
     const result = await handler({
       io,
       socket,
-      userId,
+      user,
       parsedMessage,
       actions: { reply, broadcast },
       next
