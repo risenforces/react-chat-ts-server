@@ -54,6 +54,7 @@
   },
   "_moduleAliases": {
     "@app": "app",
+    "@socket-middlewares": "app/socket/middlewares",
     "@config": "app.config.js"
   }
 }
