@@ -2,7 +2,7 @@ const { Router } = require('express')
 const router = Router()
 const jwt = require('jsonwebtoken')
 
-const validate = require('@app/middlewares/validate')
+const { validate } = require('@rest-v1-middlewares')
 const schemas = require('./schemas')
 
 const { User } = require('@app/db/models')

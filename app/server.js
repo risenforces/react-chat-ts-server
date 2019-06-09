@@ -1,16 +1,10 @@
 const express = require('express')
 const app = express()
 
-require('./setup')
+require('./general-setup')
 
-const cors = require('cors')
-const bodyParser = require('body-parser')
-
-app.use(cors())
-app.use(bodyParser.json())
-
-const { useRoutes } = require('./routes')
-useRoutes(app)
+const { useREST } = require('./rest')
+useREST.v1(app, '/api/v1')
 
 const { useWS } = require('./socket')
 const server = useWS(app, '/ws')

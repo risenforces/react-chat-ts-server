@@ -1,10 +1,8 @@
 const SocketIO = require('socket.io')
-const Log = require('@app/helpers/Log')
 
 const { setup, createHandler } = require('./setup')
 
 const checkAuth = require('./helpers/checkAuth')
-const parseMessage = require('./helpers/parseMessage')
 
 exports.useWS = (app, path) => {
   const server = require('http').createServer(app)

@@ -1,6 +1,6 @@
 const { User } = require('@app/db/models')
 
-const validate = require('@app/middlewares/validate')
+const { validate } = require('@rest-v1-middlewares')
 const schemas = require('../schemas')
 
 exports.setupGet = router => {
