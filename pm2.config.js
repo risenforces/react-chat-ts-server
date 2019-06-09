@@ -9,6 +9,7 @@ if (!fs.existsSync(logsFolder)) {
   fs.mkdirSync(logsFolder)
 }
 
+// TODO: add cluster support to socket
 module.exports = {
   apps: [
     {
