@@ -4,7 +4,7 @@ const { validate } = require('@rest-v1-middlewares')
 const schemas = require('../schemas')
 const { roles } = require('@rest-v1-middlewares')
 
-const reservedUsernames = require('@app/constants/reserved-usernames')
+const reservedNames = require('@app/constants/reserved-names')
 
 exports.setupEdit = router => {
   router.put('/me', validate(schemas.editMe), async (req, res) => {
@@ -14,14 +14,12 @@ exports.setupEdit = router => {
 
     try {
       if (data.username && data.username !== currentUsername) {
-        if (reservedUsernames.includes(data.username)) {
+        if (reservedNames.includes(data.username)) {
           return res.send({
             status: 'failure',
             error: {
               code: '@users/USERNAME_IS_RESERVED',
-              message: `Username "${
-                data.username
-              }" is reserved and cannot be used`
+              message: `Username "${data.username}" is reserved and cannot be used`
             }
           })
         }
@@ -40,11 +38,7 @@ exports.setupEdit = router => {
         }
       }
 
-      const updateQuery = User.findOneAndUpdate(
-        { username: currentUsername },
-        data,
-        { new: true }
-      )
+      const updateQuery = User.findOneAndUpdate({ username: currentUsername }, data, { new: true })
       const updatedUser = await updateQuery.exec()
 
       if (!updatedUser) {
@@ -68,53 +62,46 @@ exports.setupEdit = router => {
     }
   })
 
-  router.put(
-    '/:username',
-    roles.admin,
-    validate(schemas.editUser),
-    async (req, res) => {
-      const { username } = req.params
-      const { data, ignoreReserved } = req.body
+  router.put('/:username', roles.admin, validate(schemas.editUser), async (req, res) => {
+    const { username } = req.params
+    const { data, ignoreReserved } = req.body
 
-      try {
-        if (data.username && data.username !== username) {
-          if (!ignoreReserved && reservedUsernames.includes(data.username)) {
-            return res.send({
-              status: 'failure',
-              error: {
-                code: '@users/USERNAME_IS_RESERVED',
-                message: `Username "${
-                  data.username
-                }" is reserved and cannot be used`
-              }
-            })
-          }
-        }
-
-        const updateQuery = User.findOneAndUpdate({ username }, data, {
-          new: true
-        })
-        const updatedUser = await updateQuery.exec()
-
-        if (!updatedUser) {
+    try {
+      if (data.username && data.username !== username) {
+        if (!ignoreReserved && reservedNames.includes(data.username)) {
           return res.send({
             status: 'failure',
             error: {
-              code: '@users/USER_NOT_FOUND',
-              message: 'User not found'
+              code: '@users/USERNAME_IS_RESERVED',
+              message: `Username "${data.username}" is reserved and cannot be used`
             }
           })
         }
+      }
 
+      const updateQuery = User.findOneAndUpdate({ username }, data, {
+        new: true
+      })
+      const updatedUser = await updateQuery.exec()
+
+      if (!updatedUser) {
         return res.send({
-          status: 'success',
-          payload: {
-            user: updatedUser.getFullData()
+          status: 'failure',
+          error: {
+            code: '@users/USER_NOT_FOUND',
+            message: 'User not found'
           }
         })
-      } catch (err) {
-        res.sendStatus(500)
       }
+
+      return res.send({
+        status: 'success',
+        payload: {
+          user: updatedUser.getFullData()
+        }
+      })
+    } catch (err) {
+      res.sendStatus(500)
     }
-  )
+  })
 }

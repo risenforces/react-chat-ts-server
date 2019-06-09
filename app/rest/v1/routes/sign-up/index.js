@@ -7,13 +7,13 @@ const schemas = require('./schemas')
 
 const { User } = require('@app/db/models')
 
-const reservedUsernames = require('@app/constants/reserved-usernames')
+const reservedNames = require('@app/constants/reserved-names')
 
 router.post('/', validate(schemas.signUp), async (req, res) => {
   const { username, password } = req.body
 
   try {
-    if (reservedUsernames.includes(username)) {
+    if (reservedNames.includes(username)) {
       return res.send({
         status: 'failure',
         error: {
