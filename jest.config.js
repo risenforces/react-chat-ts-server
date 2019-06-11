@@ -5,8 +5,8 @@ module.exports = {
   testRegex: '\\.test\\.js',
   moduleNameMapper: {
     '^@app(.*)$': '<rootDir>/app$1',
-    '^@rest-v1-middlewares$': '<rootDir>/app/rest/v1/middlewares',
-    '^@socket-middlewares$': '<rootDir>/app/socket/middlewares',
+    '^@rest-v1(.*)$': '<rootDir>/app/rest/v1',
+    '^@socket(.*)$': '<rootDir>/app/socket',
     '^@config$': '<rootDir>/app.config.js'
   }
 }

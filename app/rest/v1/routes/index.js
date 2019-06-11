@@ -1,4 +1,4 @@
-const { auth } = require('@rest-v1-middlewares')
+const { auth } = require('@rest-v1/middlewares')
 
 exports.useRoutes = router => {
   const signIn = require('./sign-in')

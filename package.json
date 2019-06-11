@@ -54,8 +54,8 @@
   },
   "_moduleAliases": {
     "@app": "app",
-    "@rest-v1-middlewares": "app/rest/v1/middlewares",
-    "@socket-middlewares": "app/socket/middlewares",
+    "@rest-v1": "app/rest/v1",
+    "@socket": "app/socket",
     "@config": "app.config.js"
   }
 }

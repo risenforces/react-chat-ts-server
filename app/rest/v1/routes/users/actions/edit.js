@@ -1,8 +1,8 @@
 const { User } = require('@app/db/models')
 
-const { validate } = require('@rest-v1-middlewares')
+const { validate } = require('@rest-v1/middlewares')
 const schemas = require('../schemas')
-const { roles } = require('@rest-v1-middlewares')
+const { roles } = require('@rest-v1/middlewares')
 
 const reservedNames = require('@app/constants/reserved-names')
 

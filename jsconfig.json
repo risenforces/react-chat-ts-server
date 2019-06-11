@@ -3,9 +3,9 @@
     "baseUrl": "./",
     "paths": {
       "@app/*": ["./app/*", "./app"],
-      "@rest-v1-middlewares": ["./app/rest/v1/middlewares"],
-      "@socket-middlewares": ["./app/socket/middlewares"],
-      "@config": ["app.config.js"] 
+      "@rest-v1/*": ["./app/rest/v1/*", "./app/rest/v1"],
+      "@socket/*": ["./app/socket/*", "./app/socket"],
+      "@config": ["app.config.js"]
     }
   }
 }
