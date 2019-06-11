@@ -53,19 +53,34 @@
  * @returns {void}
  */
 
-const actions = new Map()
+// const actions = new Map()
+const actions = {}
+const middlewares = {}
 
-const createActionGroup = groupName => {
+/**
+ * @param {String} groupName
+ * @param  {...Handler} groupMiddlewares
+ */
+const createActionGroup = (groupName, ...groupMiddlewares) => {
+  middlewares[groupName] = groupMiddlewares
+
   /**
    * @param {String} actionName
    * @param  {...Handler} handlers
    */
   const addAction = (actionName, ...handlers) => {
-    actions.set(`${groupName}/${actionName}`, handlers)
+    actions[groupName + '/' + actionName] = handlers
   }
 
-  const createSubGroup = subGroupName => {
-    return createActionGroup(`${groupName}/${subGroupName}`)
+  /**
+   * @param {String} subGroupName
+   * @param  {...Handler} groupMiddlewares
+   */
+  const createSubGroup = (subGroupName, ...groupMiddlewares) => {
+    return createActionGroup(
+      `${groupName}/${subGroupName}`, 
+      ...groupMiddlewares
+    )
   }
 
   return {
@@ -74,16 +89,21 @@ const createActionGroup = groupName => {
   }
 }
 
-const get = action => actions.get(action) || null
+const get = action => {
+  let result = []
+
+  const groupPath = action.split('/').slice(0, -1)
+
+  let current = ''
+  for (let segment of groupPath) {
+    current += !current ? segment : '/' + segment
+    result = result.concat(middlewares[current])
+  }
+
+  return result.concat(actions[action])
+}
 
 module.exports = {
   get,
   createActionGroup
 }
-
-createActionGroup('vasya').addAction('hello', ({}) => {
-  actions.broadcast.room('my-room', {
-    event,
-    
-  })
-})
