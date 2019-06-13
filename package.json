@@ -54,6 +54,7 @@
   },
   "_moduleAliases": {
     "@app": "app",
+    "@common-schemas": "app/constants/common-schemas",
     "@rest-v1": "app/rest/v1",
     "@socket": "app/socket",
     "@config": "app.config.js"

@@ -5,6 +5,7 @@
       "@app/*": ["./app/*", "./app"],
       "@rest-v1/*": ["./app/rest/v1/*", "./app/rest/v1"],
       "@socket/*": ["./app/socket/*", "./app/socket"],
+      "@common-schemas": ["./app/constants/common-schemas"],
       "@config": ["app.config.js"]
     }
   }
