@@ -3,7 +3,7 @@ const Yup = require('yup')
 const {
   UserDataSchema,
   EditableUserDataSchema
-} = require('@app/constants/common-schemas')
+} = require('@common-schemas')
 
 const ParamsSchema = Yup.object().shape({
   username: Yup.string().required()

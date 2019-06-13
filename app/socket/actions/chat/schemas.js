@@ -1,5 +1,5 @@
 const Yup = require('yup')
-const { NameSchema, ChatAccessModeSchema } = require('@app/constants/common-schemas')
+const { NameSchema, ChatAccessModeSchema } = require('@common-schemas')
 
 exports.CreateChat = Yup.object()
   .shape({

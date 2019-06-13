@@ -3,7 +3,7 @@ const Yup = require('yup')
 const {
   NameSchema,
   PasswordSchema
-} = require('@app/constants/common-schemas')
+} = require('@common-schemas')
 
 module.exports = {
   signUp: {
