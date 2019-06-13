@@ -53,7 +53,6 @@
  * @returns {void}
  */
 
-// const actions = new Map()
 const actions = {}
 const middlewares = {}
 
@@ -77,10 +76,7 @@ const createActionGroup = (groupName, ...groupMiddlewares) => {
    * @param  {...Handler} groupMiddlewares
    */
   const createSubGroup = (subGroupName, ...groupMiddlewares) => {
-    return createActionGroup(
-      `${groupName}/${subGroupName}`, 
-      ...groupMiddlewares
-    )
+    return createActionGroup(`${groupName}/${subGroupName}`, ...groupMiddlewares)
   }
 
   return {
